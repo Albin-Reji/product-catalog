@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ProducerRepository extends JpaRepository<Producer, String> {
     Optional<Producer> findByProducerId(@NotNull String producerId);
+
+    Optional<Producer> findByProducerName(String producerName);
 }
