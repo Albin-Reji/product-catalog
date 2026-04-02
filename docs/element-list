@@ -1,0 +1,7 @@
+com.albin.productcatalog
+com.albin.productcatalog.controller
+com.albin.productcatalog.dto
+com.albin.productcatalog.exception
+com.albin.productcatalog.model
+com.albin.productcatalog.repository
+com.albin.productcatalog.service
