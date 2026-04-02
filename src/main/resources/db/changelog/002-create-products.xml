@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="002-create-products" author="albin">
+
+        <!--
+            PRECONDITION: If the 'products' table already exists, mark this changeset
+            as already run and skip it.
+        -->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="products"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="products">
+
+            <!-- UUID primary key — matches GenerationType.UUID in Product.java -->
+            <column name="product_id" type="varchar(36)">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_products"
+                             nullable="false"/>
+            </column>
+
+            <!-- FK to producers — nullable=false from @JoinColumn -->
+            <column name="producer_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- productName: nullable=false, unique=true from @Column -->
+            <column name="product_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"
+                             uniqueConstraintName="uq_products_name"/>
+            </column>
+
+            <!-- price: nullable=false from @Column -->
+            <column name="price" type="numeric(15,2)">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- category: no constraints in model = nullable -->
+            <column name="category" type="varchar(100)"/>
+
+            <!-- @CreationTimestamp — set by Hibernate on insert -->
+            <column name="created_at" type="timestamp"/>
+
+            <!-- @UpdateTimestamp — set by Hibernate on update -->
+            <column name="updated_at" type="timestamp"/>
+
+        </createTable>
+
+        <!-- FK constraint with ON DELETE CASCADE — matches @OnDelete(action = OnDeleteAction.CASCADE) -->
+        <addForeignKeyConstraint
+                baseTableName="products"
+                baseColumnNames="producer_id"
+                referencedTableName="producers"
+                referencedColumnNames="producer_id"
+                constraintName="fk_product_producer"
+                onDelete="CASCADE"
+                onUpdate="NO ACTION"/>
+
+        <!-- Index on product_id — matches @Index(name="idx_product_id") -->
+        <createIndex tableName="products" indexName="idx_product_id">
+            <column name="product_id"/>
+        </createIndex>
+
+        <!-- Index on producer_id — matches @Index(name="idx_producer_id") -->
+        <createIndex tableName="products" indexName="idx_producer_id">
+            <column name="producer_id"/>
+        </createIndex>
+
+        <!-- price must be zero or positive -->
+        <sql>
+            ALTER TABLE products
+            ADD CONSTRAINT chk_products_price CHECK (price >= 0);
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

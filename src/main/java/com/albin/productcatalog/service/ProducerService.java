@@ -3,6 +3,7 @@ package com.albin.productcatalog.service;
 import com.albin.productcatalog.dto.ProducerRequestDto;
 import com.albin.productcatalog.dto.ProducerResponseDto;
 import com.albin.productcatalog.exception.ProducerAlreadyExists;
+import com.albin.productcatalog.exception.ProducerNotFoundException;
 import com.albin.productcatalog.model.Producer;
 import com.albin.productcatalog.repository.ProducerRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,17 @@ public class ProducerService {
                 .email(producer.getEmail())
                 .phone(producer.getPhone())
                 .build();
+    }
+
+    public ProducerResponseDto getProducerById(String producerId) {
+        Producer producer=producerRepository.findByProducerId(producerId)
+                .orElseThrow(()-> new ProducerNotFoundException("Producer Not Found With Id: "+producerId));
+        return toProducerResponseDto(producer);
+    }
+
+    public ProducerResponseDto getProducerByName(String producerName) {
+       Producer producer=producerRepository.findByProducerName(producerName)
+                .orElseThrow(()->new ProducerNotFoundException("Producer Not Found With Name"+ producerName));
+        return toProducerResponseDto(producer);
     }
 }
