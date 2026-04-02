@@ -3,6 +3,8 @@ package com.albin.productcatalog.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
@@ -16,7 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "products")
+@Table(name = "products",
+        indexes ={
+        @Index(name="idx_product_id", columnList ="product_id"),
+        @Index(name="idx_producer_id", columnList ="producer_id")
+        }
+)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,10 +31,12 @@ public class Product {
     private String productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "producer_id", nullable = false)
+    @JoinColumn(name = "producer_id", nullable = false,
+                foreignKey = @ForeignKey(name = "fk_product_producer"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Producer producer;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique=true )
     private String productName;
 
     @Column(nullable = false)
@@ -35,7 +44,10 @@ public class Product {
 
     private String category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product",
+               cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               fetch = FetchType.LAZY)
     private List<ProductAttribute> attributes = new ArrayList<>();
 
     @CreationTimestamp
