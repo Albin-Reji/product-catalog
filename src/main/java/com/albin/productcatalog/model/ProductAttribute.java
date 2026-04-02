@@ -2,6 +2,8 @@ package com.albin.productcatalog.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -16,7 +18,9 @@ public class ProductAttribute {
     private String attributeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id",
+                foreignKey = @ForeignKey(name = "fk_attribute_product"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     @Column(name = "attr_key")
