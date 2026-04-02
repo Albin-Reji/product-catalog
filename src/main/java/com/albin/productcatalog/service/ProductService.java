@@ -86,10 +86,5 @@ public class ProductService {
                 .orElseThrow(()->new ProductNotFound("Product Not Found"));
         return toProductResponseDto(product);
     }
-    @Transactional
-    public void deleteProductById(String productId) {
-        productRepository.findByProductId(productId)
-                        .orElseThrow(()->new ProductNotFound("Product With Id "+ productId+ " Not Found"));
-        productRepository.deleteByProductId(productId);
-    }
+
 }
