@@ -35,7 +35,6 @@ public class ProducerController {
 
     /**
      * Retrieves a producer by its unique ID.
-     *
      * @param producerId UUID of the producer
      * @return the matching producer with HTTP 200 (OK)
      */
