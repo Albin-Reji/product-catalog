@@ -1,21 +1,47 @@
+# ============================================================
+# Product Catalog Application Configuration
+# ============================================================
+
 spring:
   application:
     name: product-catalog
-# db config
+
+  # ----------------------------------------------------------
+  # PostgreSQL DataSource Configuration
+  # DB_NAME, DB_USERNAME, DB_PASSWORD are resolved from system
+  # properties that are loaded from the .env file at startup.
+  # ----------------------------------------------------------
   datasource:
     url: jdbc:postgresql://localhost:5432/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
+  # ----------------------------------------------------------
+  # JPA / Hibernate Configuration
+  # ddl-auto: validate – Hibernate validates the schema against
+  #   the entities but does NOT modify the database; schema
+  #   changes are handled by Liquibase (see below).
+  # show-sql: true – Logs generated SQL for development debugging.
+  # ----------------------------------------------------------
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
-# liquidbase config
+
+  # ----------------------------------------------------------
+  # Liquibase Database Migration
+  # The master changelog file orchestrates all incremental
+  # migration scripts for the PostgreSQL schema.
+  # ----------------------------------------------------------
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
-# port
+
+# ----------------------------------------------------------
+# Embedded Server Configuration
+# The application runs on port 8081 to avoid conflicts with
+# other services that may occupy the default port 8080.
+# ----------------------------------------------------------
 server:
   port: 8081
