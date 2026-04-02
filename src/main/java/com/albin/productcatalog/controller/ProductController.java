@@ -2,6 +2,7 @@ package com.albin.productcatalog.controller;
 
 import com.albin.productcatalog.dto.ProductRequestDTO;
 import com.albin.productcatalog.dto.ProductResponseDTO;
+import com.albin.productcatalog.dto.ProductUpdateRequestDto;
 import com.albin.productcatalog.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,14 @@ public class ProductController {
             @PathVariable("productName")String productName
     ){
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductByName(productName));
+    }
+
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ProductResponseDTO> updateProduct(
+            @PathVariable("productId") String productId,
+            @RequestBody ProductUpdateRequestDto productUpdateRequestDto
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.updateProduct(productId, productUpdateRequestDto));
     }
 
     @DeleteMapping("/{productId}")
